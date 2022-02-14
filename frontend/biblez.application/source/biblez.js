@@ -38,7 +38,7 @@ enyo.kind({
 		{name: "versePopup", kind: "BibleZ.VersePopup", className: "verse-popup", onOpen: "hideColors", onNote: "handleNote", onBookmark: "handleBookmark", onHighlight: "handleHighlight"},
 		{name: "fontMenu", kind: "BibleZ.FontMenu", onFontSize: "changeFontSize", onFont: "changeFont"},
 		{name: "biblezAbout", kind: "BibleZ.About"},
-		{name: "pro", kind: "BibleZ.Pro"},
+		/*{name: "pro", kind: "BibleZ.Pro"},*/
 		{name: "mainPane", flex: 1, kind: "Pane", transitionKind: "enyo.transitions.Simple", onSelectView: "viewSelected", components: [
 			{name: "verseView", kind: "VFlexBox", flex: 1, components: [
 				{name: "mainToolbar", kind: "Toolbar", components: [
@@ -125,10 +125,11 @@ enyo.kind({
 		this.inherited(arguments);
 		if (enyo.fetchDeviceInfo().keyboardAvailable)
 			this.$.btSidebar.setToggling(false);
-
+		/*
 		if (!enyo.getCookie("biblezpro") && !enyo.fetchDeviceInfo().keyboardAvailable) {
 			this.$.pro.openAtCenter();
 		}
+		*/
 	},
 
 	//SERVICE STUFF

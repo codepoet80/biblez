@@ -6,5 +6,7 @@ enyo.depends(
   "source/biblezPrefs.js",
   "source/biblezTools.js",
   "source/mapping.js",
+  "source/updater.js",
+  "source/verseOfTheDay.js",
   "css/biblez.css"
 );
