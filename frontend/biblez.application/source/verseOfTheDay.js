@@ -1,42 +1,29 @@
 enyo.kind({
     name: "Helpers.VerseOfTheDay",
     kind: "Control",
-    sender: null,
     published: {
+        verse: "",
+        reference: ""
     },
-
+    events: {
+        onGotVotd: ""
+    },
     components: [{
             name: "votdWS",
             kind: "WebService",
-            url: "",
+            url: "https://www.biblegateway.com/usage/votd/rss/votd.rdf?31",
             onSuccess: "votdSuccess",
             onFailure: "votdFail"
         },
-        {
-            kind: "Popup",
-            name: "votdPopup",
-            lazy: false,
-            layoutKind: "VFlexLayout",
-            style: "width: 80%;min-height:288px",
-            components: [
-                { content: "Verse of the Day" },
-                {
-                    kind: "BasicScroller",
-                    flex: 1,
-                    components: [
-                        { name: "votdText", kind: "HtmlContent", flex: 1, pack: "center", align: "left", style: "text-align: left;padding-top:10px;padding-bottom: 10px" }
-                    ]
-                },
-                {
-                    layoutKind: "HFlexLayout",
-                    pack: "center",
-                    components: [
-                        { kind: "Button", caption: "Thanks!", onclick: "votdDismiss" },
-                        { kind: "Button", caption: "Later", onclick: "updateCancelClick" }
-                    ]
-                }
-            ]
-        },
+        {name: "votdPopup", kind: "Popup", layoutKind: "VFlexLayout", style: "width: 80%;min-height:288px", lazy: false, components: [
+			{ content: "Verse of the Day", style: "font-weight:bold;" },
+			{ kind: "BasicScroller", flex: 1, components: [
+				{ name: "votdText", kind: "HtmlContent", flex: 1, pack: "center", align: "left", style: "text-align: left;padding-top:10px;padding-bottom: 10px" }
+			]},
+			{ layoutKind: "HFlexLayout", pack: "center", components: [
+				{ kind: "Button", caption: "Thanks!", onclick: "votdDismiss" }
+			]}
+        ]},
     ],
 
     create: function() {
@@ -44,7 +31,39 @@ enyo.kind({
         enyo.log("Verse of the Day Helper created.");
     },
 
-    updateCancelClick: function() {
-        this.$.votdPopup.close();
+    getVotd: function() {
+        this.$.votdWS.call();
     },
+
+    votdSuccess: function(inSender, inResponse) {
+        enyo.log("Got verse of the day!");
+        try {
+            parser = new DOMParser();
+            xmlDoc = parser.parseFromString(inResponse, "text/xml");
+            var verse = xmlDoc.getElementsByTagName("encoded")[0].textContent;
+            verse = verse.trim();
+            verse = verse.replace(/&rdquo;/g, "");
+            verse = verse.replace(/&ldquo;/g, "");
+            verse = verse.split("<br/>");
+            this.verse = verse[0];
+            this.ref = xmlDoc.getElementsByTagName("title")[1].textContent;
+            this.doGotVotd();
+        } catch (e) {
+            enyo.error("Couldn't parse verse of the day: " + e);
+        }
+    },
+
+    votdFail: function(inSender, inResponse) {
+        enyo.error("Failed to get verse of the day");
+    },
+
+    showPopup: function() {
+        this.$.votdText.setContent(this.verse + " <br>-" + this.ref);
+        this.$.votdPopup.openAtCenter();
+    },
+
+    votdDismiss: function() {
+        this.$.votdPopup.close();
+    }
+
 });

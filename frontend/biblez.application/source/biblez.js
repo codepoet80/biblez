@@ -71,6 +71,8 @@ enyo.kind({
 			{name: "prefs", kind: "BibleZ.Prefs", onBack: "goToMainView", onBgChange: "changeBackground", onLbChange: "changeLinebreak"},
 			{name: "sidebarView", kind: "BibleZ.Sidebar", onVerse: "handleSidebarVerse", onSearch: "handleSearch"}
 		]},
+		{kind: "Helpers.Updater", name: "myUpdater", lazy: false },
+		{kind: "Helpers.VerseOfTheDay", name: "myVotd", onGotVotd: "showVotd", lazy: false },
 		{kind: "Hybrid", name: "plugin", executable: "pluginSword", width: 0, height: 0, onPluginReady: "handlePluginReady", style: "float: left;"}
 	],
 	published: {
@@ -80,6 +82,12 @@ enyo.kind({
 
 	pluginReady: false,
 	pluginSpeechReady: false,
+	updateChecked: false,
+
+	showVotd: function() {
+		enyo.warn("owner got verse!");
+		this.$.myVotd.showPopup();
+	},
 
 	create: function() {
 		this.inherited(arguments);
@@ -130,6 +138,12 @@ enyo.kind({
 			this.$.pro.openAtCenter();
 		}
 		*/
+		if (!this.updateChecked) {
+			enyo.warn("checking for update!");
+			this.$.myUpdater.CheckForUpdate("BibleZ HD");
+			this.updateChecked = true;
+		}
+		this.$.myVotd.getVotd();
 	},
 
 	//SERVICE STUFF
