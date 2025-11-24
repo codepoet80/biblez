@@ -134,7 +134,7 @@ enyo.kind({
 	refreshModules: function (inSender, inEvent) {
 		this.$.spinner.show();
 		enyo.windows.addBannerMessage($L("Downloading List of available Modules..."), enyo.json.stringify({}));
-        this.$.DownloadMgr.call({target: "http://www.crosswire.org/ftpmirror/pub/sword/raw/mods.d.tar.gz", targetDir: "/media/internal/.sword/install"});
+        this.$.DownloadMgr.call({target: "http://bible.wosa.link/ftpmirror/pub/sword/raw/mods.d.tar.gz", targetDir: "/media/internal/.sword/install"});
 	},
 
     downloadMods: function(update) {
@@ -142,7 +142,7 @@ enyo.kind({
         if (!this.dbSets.lastModUpdate) {
             console.log("mods.d.tar.gz missing. Downloading now...");
 			enyo.windows.addBannerMessage($L("Downloading List of available Modules..."), enyo.json.stringify({}));
-            this.$.DownloadMgr.call({target: "http://www.crosswire.org/ftpmirror/pub/sword/raw/mods.d.tar.gz", targetDir: "/media/internal/.sword/install"});
+            this.$.DownloadMgr.call({target: "http://bible.wosa.link/ftpmirror/pub/sword/raw/mods.d.tar.gz", targetDir: "/media/internal/.sword/install"});
 			//this.doUntar();
         } else {
 			this.getLang();
@@ -152,7 +152,7 @@ enyo.kind({
 	downloadAddIn: function () {
 		this.$.btInstall.setPosition(0);
 		this.$.btInstallCaption.setContent($L("Installing..."));
-		url = "http://www.crosswire.org/ftpmirror/pub/sword/packages/rawzip/" + this.currentModule + ".zip";
+		url = "http://bible.wosa.link/ftpmirror/pub/sword/packages/rawzip/" + this.currentModule + ".zip";
 		console.log(url);
 		this.$.DownloadMgr.call({target: url, targetDir: "/media/internal/.sword/install"});
 	},
@@ -162,15 +162,16 @@ enyo.kind({
     },
 
     downloadFinished: function (inSender, inResponse) {
+		enyo.log("Download finished!");
 		console.log(enyo.json.stringify(inResponse));
 		this.$.btInstall.setMaximum(inResponse.amountTotal);
 		this.$.btInstall.setPosition(inResponse.amountReceived);
         if (inResponse.completed === true) {
             enyo.log("SUCCESS", "finished download");
-			if (inResponse.url == "http://www.crosswire.org/ftpmirror/pub/sword/raw/mods.d.tar.gz") {
+			if (inResponse.url == "http://bible.wosa.link/ftpmirror/pub/sword/raw/mods.d.tar.gz") {
 				this.allModsPath = inResponse.target;
 				this.doUntar();
-			} else if(inResponse.url.search("http://www.crosswire.org/ftpmirror/pub/sword/packages/rawzip/") !== -1) {
+			} else if(inResponse.url.search("http://bible.wosa.link/ftpmirror/pub/sword/packages/rawzip/") !== -1) {
 				console.log("DO UNZIP...");
 				this.$.btInstallCaption.setContent($L("Installed"));
 				this.modulePath = inResponse.target;
