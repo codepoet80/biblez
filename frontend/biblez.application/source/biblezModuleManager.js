@@ -133,15 +133,15 @@ enyo.kind({
 
 	refreshModules: function (inSender, inEvent) {
 		this.$.spinner.show();
-		enyo.windows.addBannerMessage($L("Downloading List of available Modules..."), enyo.json.stringify({}));
+		enyo.windows.addBannerMessage($L("Downloading available Modules..."), enyo.json.stringify({}));
         this.$.DownloadMgr.call({target: "http://bible.wosa.link/ftpmirror/pub/sword/raw/mods.d.tar.gz", targetDir: "/media/internal/.sword/install"});
 	},
 
     downloadMods: function(update) {
-		//console.log(enyo.json.stringify(this.dbSets["lastModUpdate"]));
+		//enyo.log(enyo.json.stringify(this.dbSets["lastModUpdate"]));
         if (!this.dbSets.lastModUpdate) {
-            console.log("mods.d.tar.gz missing. Downloading now...");
-			enyo.windows.addBannerMessage($L("Downloading List of available Modules..."), enyo.json.stringify({}));
+            enyo.log("mods.d.tar.gz missing. Downloading now...");
+			enyo.windows.addBannerMessage($L("Downloading available Modules..."), enyo.json.stringify({}));
             this.$.DownloadMgr.call({target: "http://bible.wosa.link/ftpmirror/pub/sword/raw/mods.d.tar.gz", targetDir: "/media/internal/.sword/install"});
 			//this.doUntar();
         } else {
@@ -153,7 +153,7 @@ enyo.kind({
 		this.$.btInstall.setPosition(0);
 		this.$.btInstallCaption.setContent($L("Installing..."));
 		url = "http://bible.wosa.link/ftpmirror/pub/sword/packages/rawzip/" + this.currentModule + ".zip";
-		console.log(url);
+		enyo.log(url);
 		this.$.DownloadMgr.call({target: url, targetDir: "/media/internal/.sword/install"});
 	},
 
@@ -163,16 +163,17 @@ enyo.kind({
 
     downloadFinished: function (inSender, inResponse) {
 		enyo.log("Download finished!");
-		console.log(enyo.json.stringify(inResponse));
+		enyo.log(enyo.json.stringify(inResponse));
 		this.$.btInstall.setMaximum(inResponse.amountTotal);
 		this.$.btInstall.setPosition(inResponse.amountReceived);
         if (inResponse.completed === true) {
             enyo.log("SUCCESS", "finished download");
 			if (inResponse.url == "http://bible.wosa.link/ftpmirror/pub/sword/raw/mods.d.tar.gz") {
 				this.allModsPath = inResponse.target;
+				enyo.windows.addBannerMessage($L("Extracting Modules..."), enyo.json.stringify({}));
 				this.doUntar();
 			} else if(inResponse.url.search("http://bible.wosa.link/ftpmirror/pub/sword/packages/rawzip/") !== -1) {
-				console.log("DO UNZIP...");
+				enyo.log("DO UNZIP...");
 				this.$.btInstallCaption.setContent($L("Installed"));
 				this.modulePath = inResponse.target;
 				this.doUnzip();
@@ -185,22 +186,23 @@ enyo.kind({
 
 	getLang: function () {
 		//this.$.langList.render();
-		//console.log("Getting languages...");
+		enyo.log("Getting languages...");
 		biblezTools.getLang("crosswire", enyo.bind(this, this.setLang));
 	},
 
 	setLang: function(lang) {
-		//console.log(lang);
+		enyo.log("Setting languages: " + lang);
 		this.lang = lang;
 		this.$.langList.render();
 		this.$.spinner.hide();
+		enyo.log("Done loading modules and languages!");
 	},
 
 	getLangListItem: function(inSender, inIndex) {
         var r = this.lang[inIndex];
 		this.tmpLang = "";
         if (r) {
-			//console.log(r + " - " + this.tmpLang);
+			//enyo.log(r + " - " + this.tmpLang);
 			this.$.langCode.setContent(r);
 			this.$.langName.setContent((languages[r]) ? (languages[r]) : r);
 
@@ -227,7 +229,7 @@ enyo.kind({
 	},
 
 	setModules: function (modules) {
-		//console.log(modules);
+		//enyo.log(modules);
 		this.modules = modules;
 		this.$.modList.render();
 		if (modules.length !== 0) {

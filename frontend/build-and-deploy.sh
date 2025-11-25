@@ -3,14 +3,14 @@
 #TODO: Figure out how to build back-end
 
 #tidy up
-command="rm /tmp/*.ipk 2>null"
+command="rm ../*.ipk 2>null"
 
 #build
-palm-package biblez.application biblez.package biblez.service -o /tmp
+palm-package biblez.application biblez.package biblez.service -o ../
 
 # Find what was just made
 unset -v ipk
-for file in "/tmp"/*.ipk; do
+for file in ".."/*.ipk; do
     [[ $file -nt $ipk ]] && ipk=$file
 done
 if [ -z "${ipk:-}" ]; then 

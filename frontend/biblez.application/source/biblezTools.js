@@ -77,7 +77,6 @@ var biblezTools = {
 		            transaction.executeSql(sql, [], 
 					enyo.bind(this, function () {
                         enyo.log("SUCCESS: Dropped modules table");
-                        //this.importModuleData(modules);
                         try {
                             var sql = 'CREATE TABLE IF NOT EXISTS modules (lang TEXT, modType TEXT, modName TEXT, descr TEXT, source TEXT);'
                             this.db.transaction( 
@@ -104,6 +103,7 @@ var biblezTools = {
     
     importModuleData: function(modules, inCallback)  {
         enyo.log("Reading Module Data...");
+		enyo.windows.addBannerMessage($L("Reading Module Data..."), enyo.json.stringify({}));
 		var z = 0;
         try {
 			var sql = "";
@@ -114,7 +114,7 @@ var biblezTools = {
 						if(modules[i].datapath) {
 							transaction.executeSql(sql, [modules[i].lang, modules[i].datapath.split("/")[2], modules[i].name, modules[i].description, "crosswire"], 
 							enyo.bind(this, function () {
-								//enyo.log("SUCCESS: Insert Module " + z);
+								enyo.log("SUCCESS: Insert Module " + (z+1) + " of " + modules.length + ": " + modules[z].name);
 								z++;
 								if (z == modules.length) {
 									var date = new Date();
@@ -130,11 +130,12 @@ var biblezTools = {
 		        }))
 		    );
 		} catch (e) {
-			enyo.log("ERROR", e);
+			enyo.warn("ERROR", e);
 		}
     },
 	
 	getLang: function (source, inCallback) {
+		enyo.log("Getting languages from modules");
 		var lang = [];
 		try {
 			var sql = 'SELECT lang FROM modules ORDER BY lang ASC;'

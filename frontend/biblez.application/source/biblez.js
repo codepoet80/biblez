@@ -581,6 +581,7 @@ enyo.kind({
 
 	untarModules: function (inSender, inEvent) {
 		this.log("INFO", "Untar Modules...", inSender.allModsPath);
+		enyo.log("Untar modules: " + inSender.allModsPath);
 		if (this.pluginReady) {
 			try { var status = this.$.plugin.callPluginMethod("untarMods", inSender.allModsPath); }
 			catch (e) { this.log("ERROR", "Plugin exception: " + e);}
@@ -594,16 +595,18 @@ enyo.kind({
 		enyo.log(response);
 		if (response == "0") {
 			this.log("INFO", "Read available confs...");
+			enyo.log("Reading available config modules");
 			if (this.pluginReady) {
 				try { var status = this.$.plugin.callPluginMethod("readConfs"); }
 				catch (e) { this.log("ERROR", "Plugin exception: " + e);}
 			}
 			else {
 				this.log("ERROR", "plugin not ready");
+				enyo.warn("Plugin not ready!");
 			}
 		} else {
 			this.$.modManView.stopSpinner();
-			enyo.log("Couldn't untar mods.d.gz");
+			enyo.warn("Couldn't untar mods.d.gz");
 			this.showError("Couldn't untar mods.d.tar. You need to remove the /media/internal/.sword/ directory!");
 		}
 	},
